@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using PP_Api.Modelos;
 using PP_Dominio.Entidades;
 using PP_Infraestructura;
@@ -13,11 +14,13 @@ namespace PP_Api.Controllers
     public class BilleteraController : ControllerBase
     {
         private readonly IBilleteraServicio billeteraServicio;
+        private readonly IMapper mapper;
         private readonly DataContext dataContext;
 
-        public BilleteraController(IBilleteraServicio billeteraServicio, DataContext dataContext)
+        public BilleteraController(IBilleteraServicio billeteraServicio, IMapper mapper, DataContext dataContext)
         {
             this.billeteraServicio = billeteraServicio;
+            this.mapper = mapper;
             this.dataContext = dataContext;
         }
 
@@ -31,7 +34,10 @@ namespace PP_Api.Controllers
             try
             {
                 IEnumerable<Billetera> billeteras = await billeteraServicio.GetAll();
-                return Ok(new { total = billeteras.Count(), billeteras });
+                
+                IEnumerable<BilleteraModel> billeteraModels = mapper.Map<IEnumerable<BilleteraModel>>(billeteras);
+                
+                return Ok(new { total = billeteraModels.Count(), billeteraModels });
             }
             catch (ArgumentException)
             {
@@ -56,14 +62,7 @@ namespace PP_Api.Controllers
             if (billeteraServicio.VerifyDocumentOrNameExists(model.DocumentId, model.Name))
                 return NotFound(new { mensaje = "Existe una billetera con el mismo DocumentId o Name. Por favor cambiarlo." });
 
-            Billetera billetera = new Billetera
-            {
-                DocumentId = model.DocumentId,
-                Name = model.Name,
-                Balance = model.Balance,
-
-                EstaBorrado = model.Estaborrado
-            };
+            Billetera billetera = mapper.Map<Billetera>(model);
 
             await billeteraServicio.Create(billetera);
             return Ok(new { mensaje = "Billetera creada correctamente" });
@@ -81,7 +80,7 @@ namespace PP_Api.Controllers
             if (billeteraServicio.VerifyBalanceNegative(model.Balance))
                 return NotFound(new { mensaje = "El saldo no puede ser negativo" });
 
-            Billetera billetera = new Billetera { Balance = model.Balance };
+            Billetera billetera = mapper.Map<Billetera>(model);
 
             await billeteraServicio.Update(id, billetera);
             return Ok(new { mensaje = "Billetera actualizada correctamente" });

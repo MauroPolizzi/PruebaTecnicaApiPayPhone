@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using PP_Api.Modelos;
 using PP_Dominio.Entidades;
 using PP_Infraestructura;
@@ -14,12 +15,14 @@ namespace PP_Api.Controllers
     {
         private readonly IBilleteraServicio billeteraServicio;
         private readonly IMovimientoServicio movimientoServicio;
+        private readonly IMapper mapper;
         private readonly DataContext dataContext;
 
-        public MovimientoController(IMovimientoServicio movimientoServicio, IBilleteraServicio billeteraServicio, DataContext dataContext)
+        public MovimientoController(IMovimientoServicio movimientoServicio, IBilleteraServicio billeteraServicio, IMapper mapper, DataContext dataContext)
         {
             this.movimientoServicio = movimientoServicio;
             this.billeteraServicio = billeteraServicio;
+            this.mapper = mapper;
             this.dataContext = dataContext;
         }
 
@@ -34,7 +37,10 @@ namespace PP_Api.Controllers
             try
             {
                 IEnumerable<Movimiento> movimientos = await movimientoServicio.GetAll();
-                return Ok(new { total = movimientos.Count(), movimientos });
+
+                IEnumerable<MovimientoModel> movimientoModels = mapper.Map<IEnumerable<MovimientoModel>>(movimientos);
+
+                return Ok(new { total = movimientoModels.Count(), movimientoModels });
             }
             catch (ArgumentException)
             {
@@ -55,12 +61,7 @@ namespace PP_Api.Controllers
         [Route("postmovimiento")]
         public async Task<IActionResult> Post([FromBody] MovimientoModel model)
         {
-            Movimiento movimiento = new Movimiento
-            {
-                WalletId = model.WalletId,
-                Amount = model.Amount,
-                Type = model.Type
-            };
+            Movimiento movimiento = mapper.Map<Movimiento>(model);
 
             await movimientoServicio.Create(movimiento);
             return Ok(new { mensaje = "Movimiento creado correctamente" });
@@ -83,12 +84,7 @@ namespace PP_Api.Controllers
             if (movimientoServicio.VerifyNegativeAmountOrZero(model.Amount))
                 return NotFound(new { mensaje = "El monto a transferir no puede ser cero o negativo" });
 
-            Movimiento movimiento = new Movimiento
-            {
-                WalletId = model.WalletId,
-                Amount = model.Amount,
-                Type = model.Type
-            };
+            Movimiento movimiento = mapper.Map<Movimiento>(model);
 
             await movimientoServicio.Create(movimiento);
             await billeteraServicio.UpdateWalletForMovimiento(movimiento);

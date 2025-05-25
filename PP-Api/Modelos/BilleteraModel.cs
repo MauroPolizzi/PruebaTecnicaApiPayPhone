@@ -4,8 +4,8 @@ namespace PP_Api.Modelos
 {
     public class BilleteraModel
     {
-        public int Id { get; set; }
-        public bool Estaborrado { get; set; }
+        //public int Id { get; set; }
+        //public bool Estaborrado { get; set; }
         public string DocumentId { get; set; }
         public string Name { get; set; }
         public decimal Balance { get; set; }

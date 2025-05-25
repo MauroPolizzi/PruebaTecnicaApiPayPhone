@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using PP_Api.Mappers;
 using PP_Api.Modelos;
 using PP_Dominio.Entidades;
 using PP_Infraestructura;
@@ -22,6 +23,9 @@ builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation(); // buscará todos los validadores en el mismo ensamblado que BilleteraValidator.
 builder.Services.AddValidatorsFromAssemblyContaining<BilleteraModelValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<MovimientoModelValidator>();
+
+// Agregamos middleware para AutoMapper
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var app = builder.Build();
 
