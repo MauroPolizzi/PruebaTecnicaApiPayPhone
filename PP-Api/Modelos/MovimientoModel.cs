@@ -5,8 +5,6 @@ namespace PP_Api.Modelos
 {
     public class MovimientoModel
     {
-        //public int Id { get; set; }
-        //public bool Estaborrado { get; set; }
         public int WalletId { get; set; }
         public decimal Amount { get; set; }
         public TypeOperation Type { get; set; }

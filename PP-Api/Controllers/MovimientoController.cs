@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PP_Api.AuthError;
 using PP_Api.Modelos;
 using PP_Dominio.Entidades;
 using PP_Infraestructura;
@@ -10,6 +12,7 @@ using PP_Servicios;
 namespace PP_Api.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class MovimientoController : ControllerBase
     {
@@ -36,6 +39,9 @@ namespace PP_Api.Controllers
         {
             try
             {
+                // Validamos la autenticidad del token
+                if (!User.Identity?.IsAuthenticated ?? false) return Unauthorized(new { mensaje = AuthMessageError.UnauthorizedMessage() });
+
                 IEnumerable<Movimiento> movimientos = await movimientoServicio.GetAll();
 
                 IEnumerable<MovimientoModel> movimientoModels = mapper.Map<IEnumerable<MovimientoModel>>(movimientos);
@@ -61,6 +67,9 @@ namespace PP_Api.Controllers
         [Route("postmovimiento")]
         public async Task<IActionResult> Post([FromBody] MovimientoModel model)
         {
+            // Validamos la autenticidad del token
+            if (!User.Identity?.IsAuthenticated ?? false) return Unauthorized(new { mensaje = AuthMessageError.UnauthorizedMessage() });
+
             Movimiento movimiento = mapper.Map<Movimiento>(model);
 
             await movimientoServicio.Create(movimiento);
@@ -75,6 +84,9 @@ namespace PP_Api.Controllers
         [Route("posttransferencia")]
         public async Task<IActionResult> PostTransferencia(string documentId, string name, [FromBody] MovimientoModel model)
         {
+            // Validamos la autenticidad del token
+            if (!User.Identity?.IsAuthenticated ?? false) return Unauthorized(new { mensaje = AuthMessageError.UnauthorizedMessage() });
+
             if (!movimientoServicio.VerifyWalletExist(documentId, name))
                 return NotFound(new { mensaje = "No existe la billetera a la que quiere transferir" });
 
