@@ -5,7 +5,6 @@ using PP_Api.AuthError;
 using PP_Api.Modelos;
 using PP_Api.MovimientoMessage;
 using PP_Dominio.Entidades;
-using PP_Infraestructura;
 using PP_Servicios;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -20,22 +19,19 @@ namespace PP_Api.Controllers
         private readonly IBilleteraServicio billeteraServicio;
         private readonly IMovimientoServicio movimientoServicio;
         private readonly IMapper mapper;
-        private readonly DataContext dataContext;
 
-        public MovimientoController(IMovimientoServicio movimientoServicio, IBilleteraServicio billeteraServicio, IMapper mapper, DataContext dataContext)
+        public MovimientoController(IMovimientoServicio movimientoServicio, IBilleteraServicio billeteraServicio, IMapper mapper)
         {
             this.movimientoServicio = movimientoServicio;
             this.billeteraServicio = billeteraServicio;
             this.mapper = mapper;
-            this.dataContext = dataContext;
         }
 
 
         #region Metodos de busqueda
 
-        // GET: api/<MovimientoController>
-        [HttpGet]
-        [Route("getmovimientos")]
+        // GET: api/<MovimientoController>/getmovimientos
+        [HttpGet("getmovimientos")]
         public async Task<IActionResult> Get()
         {
             try
@@ -63,9 +59,8 @@ namespace PP_Api.Controllers
 
         #region Metodos de persistencia
 
-        // POST api/<MovimientoController>
-        [HttpPost]
-        [Route("postmovimiento")]
+        // POST api/<MovimientoController>/postmovimiento
+        [HttpPost("postmovimiento")]
         public async Task<IActionResult> Post([FromBody] MovimientoModel model)
         {
             // Validamos la autenticidad del token
@@ -81,8 +76,8 @@ namespace PP_Api.Controllers
 
         #region Metodos de transferencia
 
-        [HttpPost]
-        [Route("posttransferencia")]
+        // POST api/<MovimientoController>/posttransferencia?documentId={""}&name={""}
+        [HttpPost("posttransferencia")]
         public async Task<IActionResult> PostTransferencia(string documentId, string name, [FromBody] MovimientoModel model)
         {
             // Validamos la autenticidad del token

@@ -5,7 +5,6 @@ using PP_Api.AuthError;
 using PP_Api.BilleteraMessage;
 using PP_Api.Modelos;
 using PP_Dominio.Entidades;
-using PP_Infraestructura;
 using PP_Servicios;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -19,20 +18,17 @@ namespace PP_Api.Controllers
     {
         private readonly IBilleteraServicio billeteraServicio;
         private readonly IMapper mapper;
-        private readonly DataContext dataContext;
 
-        public BilleteraController(IBilleteraServicio billeteraServicio, IMapper mapper, DataContext dataContext)
+        public BilleteraController(IBilleteraServicio billeteraServicio, IMapper mapper)
         {
             this.billeteraServicio = billeteraServicio;
             this.mapper = mapper;
-            this.dataContext = dataContext;
         }
 
         #region Metodos de busqueda
 
-        // GET: api/<BilleteraController>
-        [HttpGet]
-        [Route("getbilletera")]
+        // GET: api/<BilleteraController>/getbilletera
+        [HttpGet("getbilletera")]
         public async Task<IActionResult> Get()
         {
             try
@@ -60,9 +56,8 @@ namespace PP_Api.Controllers
 
         #region Metodos de persistencia
 
-        // POST api/<BilleteraController>
-        [HttpPost]
-        [Route("postbilletera")]
+        // POST api/<BilleteraController>/postbilletera
+        [HttpPost("postbilletera")]
         public async Task<IActionResult> Post([FromBody] BilleteraModel model)
         {
             // Validamos la autenticidad del token
@@ -79,8 +74,7 @@ namespace PP_Api.Controllers
         }
 
         // PUT api/<BilleteraController>/putbilletera/5
-        [HttpPut("{id}")]
-        [Route("putbilletera")]
+        [HttpPut("putbilletera/{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] BilleteraModel model)
         {
             // Validamos la autenticidad del token
@@ -99,9 +93,8 @@ namespace PP_Api.Controllers
             return Ok(new { mensaje = BilleteraMessageOk.MessageUpdateOK() });
         }
 
-        // DELETE api/<BilleteraController>/5
-        [HttpDelete("{id}")]
-        [Route("deletebilletera")]
+        // DELETE api/<BilleteraController>/deletebilletera/5
+        [HttpDelete("deletebilletera/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             // Validamos la autenticidad del token
