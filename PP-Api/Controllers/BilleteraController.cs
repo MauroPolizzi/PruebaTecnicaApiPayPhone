@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PP_Api.AuthError;
+using PP_Api.BilleteraMessage;
 using PP_Api.Modelos;
 using PP_Dominio.Entidades;
 using PP_Infraestructura;
@@ -51,7 +52,7 @@ namespace PP_Api.Controllers
             }
             catch
             {
-                return BadRequest("No se encontro nada");
+                return BadRequest(BilleteraMessageError.MessageCollectionEmpty());
             }
         }
 
@@ -69,12 +70,12 @@ namespace PP_Api.Controllers
 
             // Verificamos
             if (billeteraServicio.VerifyDocumentOrNameExists(model.DocumentId, model.Name))
-                return NotFound(new { mensaje = "Existe una billetera con el mismo DocumentId o Name. Por favor cambiarlo." });
+                return NotFound(new { mensaje = BilleteraMessageError.MessageDocumentOrNameExists() });
 
             Billetera billetera = mapper.Map<Billetera>(model);
 
             await billeteraServicio.Create(billetera);
-            return Ok(new { mensaje = "Billetera creada correctamente" });
+            return Ok(new { mensaje = BilleteraMessageOk.MessageCreateOK() });
         }
 
         // PUT api/<BilleteraController>/putbilletera/5
@@ -87,15 +88,15 @@ namespace PP_Api.Controllers
 
             // Verificamos
             if (!billeteraServicio.VerifyIdExist(id))
-                return NotFound(new { mensaje = "Billetera inexistente" });
+                return NotFound(new { mensaje = BilleteraMessageError.MessageExists() });
 
             if (billeteraServicio.VerifyBalanceNegative(model.Balance))
-                return NotFound(new { mensaje = "El saldo no puede ser negativo" });
+                return NotFound(new { mensaje = BilleteraMessageError.MessageBalanceNegative() });
 
             Billetera billetera = mapper.Map<Billetera>(model);
 
             await billeteraServicio.Update(id, billetera);
-            return Ok(new { mensaje = "Billetera actualizada correctamente" });
+            return Ok(new { mensaje = BilleteraMessageOk.MessageUpdateOK() });
         }
 
         // DELETE api/<BilleteraController>/5
@@ -108,10 +109,10 @@ namespace PP_Api.Controllers
 
             // Verificamos
             if (!billeteraServicio.VerifyIdExist(id))
-                return NotFound(new { mensaje = "Billetera inexistente" });
+                return NotFound(new { mensaje = BilleteraMessageError.MessageExists() });
 
             await billeteraServicio.Delete(id);
-            return Ok(new { mensaje = "Billetera eliminada correctamente" });
+            return Ok(new { mensaje = BilleteraMessageOk.MessageDeleteOK() });
         }
 
         #endregion

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PP_Api.AuthError;
 using PP_Api.Modelos;
+using PP_Api.MovimientoMessage;
 using PP_Dominio.Entidades;
 using PP_Infraestructura;
 using PP_Servicios;
@@ -54,7 +55,7 @@ namespace PP_Api.Controllers
             }
             catch
             {
-                return BadRequest("No se encontro nada");
+                return BadRequest( MovimientoMessageError.MessageCollectionEmpty() );
             }
         }
 
@@ -73,7 +74,7 @@ namespace PP_Api.Controllers
             Movimiento movimiento = mapper.Map<Movimiento>(model);
 
             await movimientoServicio.Create(movimiento);
-            return Ok(new { mensaje = "Movimiento creado correctamente" });
+            return Ok(new { mensaje = MovimientoMessageOK.MessageCreateOk() });
         }
 
         #endregion
@@ -88,20 +89,20 @@ namespace PP_Api.Controllers
             if (!User.Identity?.IsAuthenticated ?? false) return Unauthorized(new { mensaje = AuthMessageError.UnauthorizedMessage() });
 
             if (!movimientoServicio.VerifyWalletExist(documentId, name))
-                return NotFound(new { mensaje = "No existe la billetera a la que quiere transferir" });
+                return NotFound(new { mensaje = MovimientoMessageError.MessageWalletExist() });
 
             if (!movimientoServicio.VerifyAmountGreaterThanOrEqualToBalance(documentId, name, model.Amount))
-                return NotFound(new { mensaje = "El monto a transferir supera el que tiene en la billetera." });
+                return NotFound(new { mensaje = MovimientoMessageError.MessageAmountGreaterThanOrEqualToBalance() });
 
             if (movimientoServicio.VerifyNegativeAmountOrZero(model.Amount))
-                return NotFound(new { mensaje = "El monto a transferir no puede ser cero o negativo" });
+                return NotFound(new { mensaje = MovimientoMessageError.MessageNegativeAmountOrZero() });
 
             Movimiento movimiento = mapper.Map<Movimiento>(model);
 
             await movimientoServicio.Create(movimiento);
             await billeteraServicio.UpdateWalletForMovimiento(movimiento);
             
-            return Ok(new { mensaje = "Transferencia realizada correctamente" });
+            return Ok(new { mensaje = MovimientoMessageOK.MessageCreateTransferOk() });
         }
 
         #endregion
