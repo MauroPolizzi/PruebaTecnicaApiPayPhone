@@ -29,5 +29,6 @@ namespace PP_Infraestructura
 
         public virtual DbSet<Billetera> Billetera { get; set; }
         public virtual DbSet<Movimiento> Movimiento { get; set; }
+        public virtual DbSet<Usuario> Usuario { get; set; }
     }
 }
