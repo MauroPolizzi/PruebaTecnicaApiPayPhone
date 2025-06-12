@@ -43,6 +43,8 @@ builder.Services.AddTransient<IRepositorio<Billetera>, Repositorio<Billetera>>()
 
 builder.Services.AddTransient<IMovimientoServicio, MovimientoServicio>();
 builder.Services.AddTransient<IRepositorio<Movimiento>, Repositorio<Movimiento>>();
+builder.Services.AddTransient<IUsuarioServicio, UsuarioServicio>();
+builder.Services.AddTransient<IRepositorio<Usuario>, Repositorio<Usuario>>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();

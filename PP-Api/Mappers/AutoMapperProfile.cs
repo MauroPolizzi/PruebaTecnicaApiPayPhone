@@ -10,6 +10,7 @@ namespace PP_Api.Mappers
         {
             CreateMap<BilleteraModel, Billetera>().ReverseMap();
             CreateMap<MovimientoModel, Movimiento>().ReverseMap();
+            CreateMap<UsuarioModel, Usuario>().ReverseMap();
         }
     }
 }
