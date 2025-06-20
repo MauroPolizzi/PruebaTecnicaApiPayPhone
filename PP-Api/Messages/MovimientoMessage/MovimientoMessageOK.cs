@@ -1,4 +1,4 @@
-﻿namespace PP_Api.MovimientoMessage
+﻿namespace PP_Api.Messages.MovimientoMessage
 {
     public static class MovimientoMessageOK
     {

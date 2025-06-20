@@ -1,4 +1,4 @@
-﻿namespace PP_Api.BilleteraMessage
+﻿namespace PP_Api.Messages.BilleteraMessage
 {
     public static class BilleteraMessageOk
     {

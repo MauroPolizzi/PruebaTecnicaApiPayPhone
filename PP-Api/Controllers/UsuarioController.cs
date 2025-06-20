@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PP_Api.AuthError;
+using PP_Api.Messages.AuthError;
+using PP_Api.Messages.UsuarioMessage;
 using PP_Api.Modelos;
 using PP_Dominio.Entidades;
 using PP_Servicios;
@@ -45,7 +46,7 @@ namespace PP_Api.Controllers
             }
             catch
             {
-                return BadRequest(); // debemos poner un mensaje
+                return BadRequest(UsuarioMessageError.MessageCollectionEmpty());
             }
         }
 
@@ -61,12 +62,12 @@ namespace PP_Api.Controllers
 
             // Verificamos si existe usuario con el UserName
             if (usuarioServicio.VeryfyUserNameExists(model.UserName))
-                return NotFound(new { mensaje = "UserName existente" });
+                return NotFound(new { mensaje = UsuarioMessageError.MessageUserNameExists() });
 
             Usuario usuario = mapper.Map<Usuario>(model);
             
             await usuarioServicio.Create(usuario);
-            return Ok(new { mensaje = "Usuario creado con exito" });
+            return Ok(new { mensaje = UsuarioMessageOk.MessageCreateOk() });
         }
 
         // PUT: api/<UsuarioController>/putusuario/5
@@ -78,12 +79,12 @@ namespace PP_Api.Controllers
 
             // Verificamos
             if (!usuarioServicio.VeryfyIdExists(id))
-                return NotFound(new { mensaje = "Usuario inexistente." });
+                return NotFound(new { mensaje = UsuarioMessageError.MessageExists() });
 
             Usuario usuario = mapper.Map<Usuario>(model);
 
             await usuarioServicio.Update(id, usuario);
-            return Ok(new { mensaje = "Usuario actualizado con exito" });
+            return Ok(new { mensaje = UsuarioMessageOk.MessageUpdateOk() });
         }
 
         // DELETE: api/<UsuarioController>/deleteusuario/5
@@ -95,10 +96,10 @@ namespace PP_Api.Controllers
 
             // Verificamos
             if (!usuarioServicio.VeryfyIdExists(id))
-                return NotFound(new { mensaje = "Usuario inexistente." });
+                return NotFound(new { mensaje = UsuarioMessageError.MessageExists() });
 
             await usuarioServicio.Delete(id);
-            return Ok(new { mensaje = "Usuario eliminado con exito" });
+            return Ok(new { mensaje = UsuarioMessageOk.MessageDeleteOk() });
         }
 
         #endregion

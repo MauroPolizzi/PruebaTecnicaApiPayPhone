@@ -1,4 +1,4 @@
-﻿namespace PP_Api.AuthError
+﻿namespace PP_Api.Messages.AuthError
 {
     public static class AuthMessageError
     {

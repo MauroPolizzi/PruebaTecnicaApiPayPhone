@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PP_Api.AuthError;
-using PP_Api.BilleteraMessage;
+using PP_Api.Messages.AuthError;
+using PP_Api.Messages.BilleteraMessage;
 using PP_Api.Modelos;
 using PP_Dominio.Entidades;
 using PP_Servicios;
